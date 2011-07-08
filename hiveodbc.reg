@@ -1,0 +1,21 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\hive ODBC]
+"Driver"="C:\\hive_odbc\\dll\\hiveodbc.dll"
+"Setup"="C:\\hive_odbc\\dll\\hiveodbc.dll"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers]
+"hive ODBC"="Installed"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources]
+"hiveodbc"="hive ODBC"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\hiveodbc]
+"Database"="default"
+"Driver"="hiveodbc"
+"Server"="10.1.243.51"
+"Port"="5001"
+"Framed"="0"
+"Debug"="100"
+"LogFile"="C:\\hive_odbc\\dll\\hiveodbc.log"
+
