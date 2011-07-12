@@ -1,9 +1,8 @@
-
 #include "hiveodbc.h"
 
 int sockfd=0;
 int errflg=0;
-int debug_level=1;
+REGISTER_INFO reginfo; 
 
 SQLRETURN SQL_API SQLBrowseConnect(
     SQLHDBC            hdbc,
@@ -13,7 +12,7 @@ SQLRETURN SQL_API SQLBrowseConnect(
     SQLSMALLINT        cbConnStrOutMax,
     SQLSMALLINT FAR   *pcbConnStrOut)
 {
-	debuglog("SQLBrowseConnect");
+	if ( func_init("SQLBrowseConnect") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -28,7 +27,7 @@ SQLRETURN SQL_API SQLColumnPrivileges(
     SQLCHAR FAR       *szColumnName,
     SQLSMALLINT        cbColumnName)
 {
-	debuglog("SQLColumnPrivileges");
+	if ( func_init("SQLColumnPrivileges") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -40,7 +39,7 @@ SQLRETURN SQL_API SQLDescribeParam(
     SQLSMALLINT FAR   *pibScale,
     SQLSMALLINT FAR   *pfNullable)
 {
-	debuglog("SQLDescribeParam");
+	if ( func_init("SQLDescribeParam") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -51,7 +50,7 @@ SQLRETURN SQL_API SQLExtendedFetch(
     SQLUINTEGER FAR   *pcrow,
     SQLUSMALLINT FAR  *rgfRowStatus)
 {
-	debuglog("SQLExtendedFetch");
+	if ( func_init("SQLExtendedFetch") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -70,14 +69,14 @@ SQLRETURN SQL_API SQLForeignKeys(
     SQLCHAR FAR       *szFkTableName,
     SQLSMALLINT        cbFkTableName)
 {
-	debuglog("SQLForeignKeys");
+	if ( func_init("SQLForeignKeys") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
 SQLRETURN SQL_API SQLMoreResults(
     SQLHSTMT           hstmt)
 {
-	debuglog("SQLMoreResults");
+	if ( func_init("SQLMoreResults") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -89,7 +88,7 @@ SQLRETURN SQL_API SQLNativeSql(
     SQLINTEGER         cbSqlStrMax,
     SQLINTEGER FAR    *pcbSqlStr)
 {
-	debuglog("SQLNativeSql");
+	if ( func_init("SQLNativeSql") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -97,7 +96,7 @@ SQLRETURN SQL_API SQLNumParams(
     SQLHSTMT           hstmt,
     SQLSMALLINT FAR   *pcpar)
 {
-	debuglog("SQLNumParams");
+	if ( func_init("SQLNumParams") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -106,7 +105,7 @@ SQLRETURN SQL_API SQLParamOptions(
     SQLUINTEGER        crow,
     SQLUINTEGER FAR   *pirow)
 {
-	debuglog("SQLParamOptions");
+	if ( func_init("SQLParamOptions") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -119,7 +118,7 @@ SQLRETURN SQL_API SQLPrimaryKeys(
     SQLCHAR FAR       *szTableName,
     SQLSMALLINT        cbTableName)
 {
-	debuglog("SQLPrimaryKeys");
+	if ( func_init("SQLPrimaryKeys") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -134,7 +133,7 @@ SQLRETURN SQL_API SQLProcedureColumns(
     SQLCHAR FAR       *szColumnName,
     SQLSMALLINT        cbColumnName)
 {
-	debuglog("SQLProcedureColumns");
+	if ( func_init("SQLProcedureColumns") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -147,7 +146,7 @@ SQLRETURN SQL_API SQLProcedures(
     SQLCHAR FAR       *szProcName,
     SQLSMALLINT        cbProcName)
 {
-	debuglog("SQLProcedures");
+	if ( func_init("SQLProcedures") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -157,7 +156,7 @@ SQLRETURN SQL_API SQLSetPos(
     SQLUSMALLINT       fOption,
     SQLUSMALLINT       fLock)
 {
-	debuglog("SQLSetPos");
+	if ( func_init("SQLSetPos") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -170,7 +169,7 @@ SQLRETURN SQL_API SQLTablePrivileges(
     SQLCHAR FAR       *szTableName,
     SQLSMALLINT        cbTableName)
 {
-	debuglog("SQLTablePrivileges");
+	if ( func_init("SQLTablePrivileges") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -184,7 +183,7 @@ SQLRETURN SQL_API SQLDrivers(
     SQLSMALLINT        cbDrvrAttrMax,
     SQLSMALLINT FAR   *pcbDrvrAttr)
 {
-	debuglog("SQLDrivers");
+	if ( func_init("SQLDrivers") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -200,7 +199,7 @@ SQLRETURN SQL_API SQLBindParameter(
     SQLINTEGER         cbValueMax,
     SQLINTEGER FAR    *pcbValue)
 {
-	debuglog("SQLBindParameter");
+	if ( func_init("SQLBindParameter") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -211,7 +210,7 @@ SQLRETURN SQL_API SQLAllocConnect(
     IB_ENV *penv = (IB_ENV *)henv;
     IB_DBC *pdbc;
 
-	debuglog("SQLAllocConnect");
+	if ( func_init("SQLAllocConnect") != 0 ){ return SQL_ERROR; }
 
     if( penv == NULL ) return SQL_ERROR;
     if( penv->dbc == NULL ) {
@@ -237,7 +236,8 @@ SQLRETURN SQL_API SQLAllocConnect(
 SQLRETURN SQL_API SQLAllocEnv(
     SQLHENV FAR       *phenv)
 {
-	debuglog("SQLAllocEnv");
+	if ( func_init("SQLAllocEnv") != 0 ){ return SQL_ERROR; }
+
     if( phenv == NULL ) return SQL_ERROR;
     *phenv = (SQLHENV)malloc( sizeof( IB_ENV ) );
     if( *phenv == NULL ) return SQL_ERROR;
@@ -254,14 +254,14 @@ SQLRETURN SQL_API SQLBindCol(
     SQLINTEGER         cbValueMax,
     SQLINTEGER FAR    *pcbValue)
 {
-	debuglog("SQLBindCol");
+	if ( func_init("SQLBindCol") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
 SQLRETURN SQL_API SQLCancel(
     SQLHSTMT           hstmt)
 {
-	debuglog("SQLSqlCancel");
+	if ( func_init("SQLSqlCancel") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -274,7 +274,7 @@ SQLRETURN SQL_API SQLColAttributes(
     SQLSMALLINT FAR   *pcbDesc,
     SQLINTEGER FAR    *pfDesc)
 {
-	debuglog("SQLColAttributes");
+	if ( func_init("SQLColAttributes") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -287,7 +287,15 @@ SQLRETURN SQL_API SQLConnect(
     SQLCHAR FAR       *szAuthStr,
     SQLSMALLINT        cbAuthStr)
 {
-	debuglog("SQLConnect");
+	if ( func_init("SQLConnect") != 0 ){ return SQL_ERROR; }
+
+	//コネクト
+	if ( DBConnect(reginfo.host, reginfo.port) != 0){
+		debuglog("SQLConnect() DBconnect error");
+		return SQL_ERROR;
+	}
+	debuglog("SQLConnect() OK");
+
 	return SQL_SUCCESS;
 }
 
@@ -302,14 +310,14 @@ SQLRETURN SQL_API SQLDescribeCol(
     SQLSMALLINT FAR   *pibScale,
     SQLSMALLINT FAR   *pfNullable)
 {
-	debuglog("SQLDescribeCol");
+	if ( func_init("SQLDescribeCol") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
 SQLRETURN SQL_API SQLDisconnect(
     SQLHDBC            hdbc)
 {
-	debuglog("SQLDisconnect");
+	if ( func_init("SQLDisconnect") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -323,31 +331,13 @@ SQLRETURN SQL_API SQLError(
     SQLSMALLINT        cbErrorMsgMax,
     SQLSMALLINT FAR   *pcbErrorMsg)
 {
-	//debuglog("SQLError");
-	//strcpy( (char*)szSqlState, "9999" );
-	//*pfNativeError=0;
-	//*szErrorMsg = 0;
-	//strcpy((char*)szErrorMsg,"");
-	//*pcbErrorMsg=strlen((char*)szErrorMsg);
-	//return SQL_ERROR;
-	//return SQL_SUCCESS;
-
-/*
-	if ( errflg != 0 ){
-		errflg=0;
-	    debuglog("SQLError()=>ERR");
-        return SQL_ERROR;
-    }
-    debuglog("SQLError()=>OK");
-	return SQL_SUCCESS;
-*/		
-
-
     IB_ENV  * penv  = (IB_ENV  *)henv;
     IB_DBC  * pdbc  = (IB_DBC  *)hdbc;
     IB_STMT * pstmt = (IB_STMT *)hstmt;
     IB_ERRINFO *perr = NULL;
     int msg_len = 0;
+
+	if ( func_init("SQLError") != 0 ){ return SQL_ERROR; }
 
     if( szErrorMsg )    *szErrorMsg = 0;  // NULL String
     if( pfNativeError ) *pfNativeError = 0;
@@ -369,25 +359,10 @@ SQLRETURN SQL_API SQLError(
 
    // サーバー側のエラーならメッセージを生成
     if( !perr->is_server ) {
-        // エラーメッセージが終わりか？
         if( *perr->msg == 0 ) {
 		    debuglog("SQLError()=>ERR");
             return SQL_ERROR;
         }
-    } else {
-        //ISC_STATUS *pstatus = perr->status;
-        char w_msg[512], *w_ptr;
-
-        // エラーメッセージをすべて取得
-        //w_ptr = perr->msg;
-        //while( isc_interprete(w_msg, &pstatus ) ) {
-        //    msg_len = perr->msg + 510 - w_ptr;
-        //    strncpy( w_ptr, w_msg, msg_len );
-        //    w_ptr += strlen(w_ptr);
-        //    *w_ptr++ = '\n';
-        //}
-        //perr->native = perr->status[1];
-        //perr->is_server = FALSE;
     }
 
     msg_len = strlen( perr->msg );
@@ -404,9 +379,6 @@ SQLRETURN SQL_API SQLError(
         msg_len = MIN( msg_len, cbErrorMsgMax - 1 );
         strncpy( (char*)szErrorMsg, perr->msg, msg_len );
         szErrorMsg[ msg_len ] = 0;
-    } else {
-        // 安全サイドなら
-        // strcpy( szErrorMsg, perr->msg );
     }
 
     if( pcbErrorMsg ) *pcbErrorMsg = msg_len;
@@ -423,14 +395,14 @@ SQLRETURN SQL_API SQLError(
 SQLRETURN SQL_API SQLFreeConnect(
     SQLHDBC            hdbc)
 {
-	debuglog("SQLFreeConnect");
+	if ( func_init("SQLFreeConnect") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
 SQLRETURN SQL_API SQLFreeEnv(
     SQLHENV            henv)
 {
-	debuglog("SQLFreeEnv");
+	if ( func_init("SQLFreeEnv") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -440,7 +412,7 @@ SQLRETURN SQL_API SQLGetCursorName(
     SQLSMALLINT        cbCursorMax,
     SQLSMALLINT FAR   *pcbCursor)
 {
-	debuglog("SQLGetCusorName");
+	if ( func_init("SQLGetCusorName") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -449,7 +421,7 @@ SQLRETURN SQL_API SQLRowCount(
     SQLHSTMT           hstmt,
     SQLINTEGER FAR    *pcrow)
 {
-	debuglog("SQLRowCount");
+	if ( func_init("SQLRowCount") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -458,7 +430,7 @@ SQLRETURN SQL_API SQLSetCursorName(
     SQLCHAR FAR       *szCursor,
     SQLSMALLINT        cbCursor)
 {
-	debuglog("SQLSetCursorName");
+	if ( func_init("SQLSetCursorName") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -467,12 +439,12 @@ SQLRETURN SQL_API SQLTransact(
     SQLHDBC            hdbc,
     SQLUSMALLINT       fType)
 {
-	debuglog("SQLTransact(%d)",fType);
+	if ( func_init("SQLTransact") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
 
-SQLRETURN SQL_API SQLSetParam(            /*      Use SQLBindParameter */
+SQLRETURN SQL_API SQLSetParam(
     SQLHSTMT           hstmt,
     SQLUSMALLINT       ipar,
     SQLSMALLINT        fCType,
@@ -482,7 +454,7 @@ SQLRETURN SQL_API SQLSetParam(            /*      Use SQLBindParameter */
     SQLPOINTER         rgbValue,
     SQLINTEGER FAR     *pcbValue)
 {
-	debuglog("SQLSetParam");
+	if ( func_init("SQLSetParam") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -493,7 +465,8 @@ SQLRETURN SQL_API SQLGetConnectOption(
 {
 	IB_DBC *pdbc = (IB_DBC *)hdbc;
 
-	debuglog("SQLGetConnectOption");
+	if ( func_init("SQLGetConnectOption") != 0 ){ return SQL_ERROR; }
+
 	if( pdbc == NULL || pvParam == NULL ) return SQL_ERROR;
 
 	*(char *)pvParam = 0; // とりあえず文字分クリア
@@ -555,62 +528,15 @@ SQLRETURN SQL_API SQLGetStmtOption(
     SQLUSMALLINT       fOption,
     SQLPOINTER         pvParam)
 {
-    IB_STMT *pstmt = (IB_STMT *)hstmt;
-    IB_DBC  *pdbc;
-
-    debuglog("SQLGetStmtOption(%d)", (int)fOption);
+	if ( func_init("SQLGetStmtOption") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
-
-/*
-    if( pstmt == NULL) return SQL_ERROR;
-
-    pdbc = (IB_DBC*)pstmt->pare_dbc;
-    switch( fOption ) {
-      case SQL_QUERY_TIMEOUT:
-
-        // 本来は全然違う設定。
-        // nowait を指定する場所が無いので、とりあえず流用
-        if( pdbc->is_nowait ) {
-            *(DWORD *)pvParam = 1;
-        } else {
-            *(DWORD *)pvParam = 0;
-        }
-        return SQL_SUCCESS;
-
-      case SQL_BIND_TYPE:
-        *(DWORD *)pvParam = SQL_BIND_BY_COLUMN;
-        return SQL_SUCCESS;
-
-      case SQL_CONCURRENCY:
-        *(DWORD *)pvParam = SQL_CONCUR_READ_ONLY;
-        return SQL_SUCCESS;
-
-      case SQL_CURSOR_TYPE:
-        *(DWORD *)pvParam = SQL_CURSOR_FORWARD_ONLY;
-        return SQL_SUCCESS;
-
-      case SQL_RETRIEVE_DATA:
-        *(DWORD *)pvParam = SQL_RD_OFF;
-        return SQL_SUCCESS;
-
-      case SQL_ROWSET_SIZE:
-        *(DWORD *)pvParam = 1;
-        return SQL_SUCCESS;
-
-      case SQL_MAX_LENGTH:
-        break;
-    }
-
-    return SQL_ERROR;
-*/
-
 }
 
 SQLRETURN SQL_API SQLParamData(
     SQLHSTMT           hstmt,
     SQLPOINTER FAR    *prgbValue)
 {
-	debuglog("SQLParamData");
+	if ( func_init("SQLParamData") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -619,7 +545,7 @@ SQLRETURN SQL_API SQLPutData(
     SQLPOINTER         rgbValue,
     SQLINTEGER         cbValue)
 {
-	debuglog("SQLPutData");
+	if ( func_init("SQLPutData") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -628,8 +554,7 @@ SQLRETURN SQL_API SQLSetConnectOption(
     SQLUSMALLINT       fOption,
     SQLUINTEGER        vParam)
 {
-	IB_DBC *pdbc = (IB_DBC *)hdbc;
-	debuglog("SQLSetConnectOption(%d)",fOption);
+	if ( func_init("SQLSetConnectOption") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 
@@ -638,61 +563,8 @@ SQLRETURN SQL_API SQLSetStmtOption(
     SQLUSMALLINT       fOption,
     SQLUINTEGER        vParam)
 {
-    long  llen ;
-
-    IB_STMT *pstmt = (IB_STMT *)hstmt;
-
-    debuglog("SQLSetStmtOption(%d)", (int)fOption);
+	if ( func_init("SQLSetStmtOption") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
-/*
-    if( pstmt == NULL ) return SQL_ERROR;
-
-    switch( fOption ) {
-
-      case SQL_CONCURRENCY:
-        if( vParam == SQL_CONCUR_READ_ONLY ) {
-            return SQL_SUCCESS;
-        }
-        return SQL_SUCCESS_WITH_INFO;
-
-      case SQL_BIND_TYPE:
-        // if( vParam == SQL_BIND_BY_COLUMN ) {
-            return SQL_SUCCESS;
-        // }
-        // return SQL_SUCCESS_WITH_INFO;
-
-      case SQL_QUERY_TIMEOUT:
-
-        // 本来は全然違う設定。
-        // nowait を指定する場所が無いので、とりあえず流用
-        {
-        IB_DBC *pdbc = (IB_DBC*)pstmt->pare_dbc;
-        if( vParam == 1 ) pdbc->is_nowait = TRUE;
-        else              pdbc->is_nowait = FALSE;
-        }
-        return SQL_SUCCESS;
-
-      case  SQL_ROWSET_SIZE:
-        llen = vParam;
-        if( llen == 1 ) {
-            return SQL_SUCCESS;
-        } else {
-            // 必要ならメッセージを...
-            return SQL_SUCCESS_WITH_INFO;
-        }
-
-      case  SQL_RETRIEVE_DATA:
-        if( vParam == SQL_RD_ON ) {
-            // 必要ならメッセージを...
-            return SQL_SUCCESS; // uso!
-            return SQL_SUCCESS_WITH_INFO;
-        } else {
-            return SQL_SUCCESS;
-        }
-    }
-    return SQL_ERROR;
-*/
-
 }
 
 SQLRETURN SQL_API SQLDataSources(
@@ -705,7 +577,7 @@ SQLRETURN SQL_API SQLDataSources(
     SQLSMALLINT        cbDescriptionMax,
     SQLSMALLINT FAR   *pcbDescription)
 {
-	debuglog("SQLDataSources");
+	if ( func_init("SQLDataSources") != 0 ){ return SQL_ERROR; }
 	return SQL_SUCCESS;
 }
 

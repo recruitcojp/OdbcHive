@@ -1,4 +1,3 @@
-
 #include "hiveodbc.h"
 
 
@@ -9,7 +8,7 @@ void debuglog( char *fmt, ... ) {
 	time_t timer;
 	struct tm *tm;
 	
-	if ( debug_level == 0 ){ return; }
+	if ( reginfo.debug_level == 0 ){ return; }
 
 	time(&timer);
 	tm = localtime(&timer);
@@ -19,7 +18,7 @@ void debuglog( char *fmt, ... ) {
 	va_end(vl);
 
 	//ƒtƒ@ƒCƒ‹‘‚«‚İ
-	if( (fp=fopen("d:\\ctest\\hiveodbc.log","a+")) == NULL ){
+	if( (fp=fopen(reginfo.logfile,"a+")) == NULL ){
 		return;
 	}
 	fprintf(fp,"%04d/%02d/%02d %02d:%02d:%02d %s\n",

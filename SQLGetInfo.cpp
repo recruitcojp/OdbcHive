@@ -1,4 +1,3 @@
-
 #include "hiveodbc.h"
 
 #define CHECK_LEN(x) \
@@ -15,8 +14,7 @@ SQLRETURN SQL_API SQLGetInfo(
 	SQLSMALLINT		cbInfoValueMax,
 	SQLSMALLINT FAR	*pcbInfoValue)
 {
-
-	debuglog("SQLGetInfo(%d)",fInfoType);
+	if ( func_init("SQLGetInfo") != 0 ){ return SQL_ERROR; }
 
     switch( fInfoType ) {
 
@@ -58,17 +56,14 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_BOOKMARK_PERSISTENCE:
         if( rgbInfoValue ) {
-            // *(SQLUINTEGER *)rgbInfoValue = SQL_BP_SCROLL; // uso!
             *(SQLUINTEGER *)rgbInfoValue = 0; // other driver
             CHECK_LEN(SQLUINTEGER);
         }
         RESULT_LEN(SQLUINTEGER);
         return SQL_SUCCESS;
 
-      // case SQL_QUALIFIER_LOCATION: 同じ
       case SQL_CATALOG_LOCATION:
         if( rgbInfoValue ) {
-            // *(SQLUSMALLINT *)rgbInfoValue = SQL_CL_START;
             *(SQLUSMALLINT *)rgbInfoValue = 0; // other driver
         }
         if( pcbInfoValue ) *pcbInfoValue = sizeof( SQLUSMALLINT );
@@ -104,7 +99,6 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_CONCAT_NULL_BEHAVIOR:
         if( rgbInfoValue && cbInfoValueMax > 1 ) {
-            // *(short *)rgbInfoValue = SQL_CB_NON_NULL;
             *(short *)rgbInfoValue = SQL_CB_NULL; // other driver
         }
         if( pcbInfoValue ) *pcbInfoValue = sizeof(short);
@@ -216,20 +210,7 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_CURSOR_COMMIT_BEHAVIOR:
         if( rgbInfoValue ) {
-            //if( pdbc->current_isolation == SQL_TXN_SERIALIZABLE ) {
-            //    *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_DELETE;
-            //} else {
-                // commit_retaining を使うので、カーソルは、継続できます。
-                // ただ、どうも、Access97 では、CB_CLOSE は駄目の様です。
-                // ドライバマネジャがSQLFetch で関数シーケンスエラー出すので、
-                // （つまり、Access97 が間違っています:Access2000 では問題無し）
-                // 当方の問題では無いのですが、CB_PRESERVE では
-                // エラーにならない様です。
-                // 余り問題が多いようなら、commit_retaining を使わず、
-                // CB_DELETE にしたほうが良いでしょう。
-                *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_PRESERVE;
-                // *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_CLOSE;
-            //}
+            *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_PRESERVE;
             CHECK_LEN(SQLUSMALLINT);
         }
         RESULT_LEN(SQLUSMALLINT);
@@ -238,14 +219,12 @@ SQLRETURN SQL_API SQLGetInfo(
       case SQL_CURSOR_ROLLBACK_BEHAVIOR:
         if( rgbInfoValue ) {
             *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_DELETE;
-            // *(SQLUSMALLINT *)rgbInfoValue = SQL_CB_CLOSE;
             CHECK_LEN(SQLUSMALLINT);
         }
         RESULT_LEN(SQLUSMALLINT);
         return SQL_SUCCESS;
 
       case SQL_DATABASE_NAME:
-        // 本当はちゃんと取得してね
         if( rgbInfoValue && cbInfoValueMax > 10 ) {
             strcpy( (char*)rgbInfoValue, "hiveodbc" );
         }
@@ -253,7 +232,6 @@ SQLRETURN SQL_API SQLGetInfo(
         return SQL_SUCCESS;
 
       case SQL_DBMS_NAME:
-        // 本当はちゃんと取得してね
         if( rgbInfoValue && cbInfoValueMax > 10 ) {
             strcpy( (char*)rgbInfoValue, "hiveodbc" );
         }
@@ -261,7 +239,6 @@ SQLRETURN SQL_API SQLGetInfo(
         return SQL_SUCCESS;
 
       case SQL_DBMS_VER:
-        // 本当はちゃんと取得してね
         if( rgbInfoValue && cbInfoValueMax > 10 ) {
             strcpy( (char*)rgbInfoValue, "01.01.0000" );
         }
@@ -304,7 +281,7 @@ SQLRETURN SQL_API SQLGetInfo(
         if( pcbInfoValue ) *pcbInfoValue = 10;
         return SQL_SUCCESS;
 
-      case SQL_DYNAMIC_CURSOR_ATTRIBUTES1: // ODBC 3.0 for Driber Maneger?
+      case SQL_DYNAMIC_CURSOR_ATTRIBUTES1:
         if( rgbInfoValue ) {
             *(SQLUINTEGER *)rgbInfoValue = SQL_CA1_NEXT;
             CHECK_LEN(SQLUINTEGER);
@@ -321,14 +298,13 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_FETCH_DIRECTION:
         if( rgbInfoValue ) {
-            *(SQLUINTEGER *)rgbInfoValue = SQL_FD_FETCH_NEXT
-               /* | SQL_FD_FETCH_FIRST */ ;  
+            *(SQLUINTEGER *)rgbInfoValue = SQL_FD_FETCH_NEXT;
             CHECK_LEN(SQLUINTEGER);
         }
         RESULT_LEN(SQLUINTEGER);
         return SQL_SUCCESS;
 
-      case SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES1: // ODBC 3.0
+      case SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES1:
         if( rgbInfoValue ) {
             *(SQLUINTEGER *)rgbInfoValue = SQL_CA1_NEXT;
             CHECK_LEN(SQLUINTEGER);
@@ -340,7 +316,7 @@ SQLRETURN SQL_API SQLGetInfo(
         if( rgbInfoValue ) {
             *(long *)rgbInfoValue = SQL_GD_ANY_COLUMN |
             SQL_GD_ANY_ORDER | SQL_GD_BOUND |
-            SQL_GD_BLOCK; // 良くわからない？
+            SQL_GD_BLOCK;
         }
         if( pcbInfoValue ) *pcbInfoValue = 4;
         return SQL_SUCCESS;
@@ -355,12 +331,7 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_IDENTIFIER_QUOTE_CHAR:
         if( rgbInfoValue ) {
-            //if( pdbc->dialect == SQL_DIALECT_V6 ) {
-                //strcpy( (char*)rgbInfoValue, "\"" );
-                strcpy( (char*)rgbInfoValue, "" );
-            //} else {
-            //    strcpy( (char*)rgbInfoValue, " " );
-            //}
+            strcpy( (char*)rgbInfoValue, "" );
         }
         if( pcbInfoValue ) *pcbInfoValue = 1;
         return SQL_SUCCESS;
@@ -373,7 +344,7 @@ SQLRETURN SQL_API SQLGetInfo(
         RESULT_LEN(SQLUSMALLINT);
         return SQL_SUCCESS;
 
-      case SQL_KEYSET_CURSOR_ATTRIBUTES1: // ODBC 3.0
+      case SQL_KEYSET_CURSOR_ATTRIBUTES1:
         if( rgbInfoValue ) {
             *(SQLUINTEGER *)rgbInfoValue = SQL_CA1_NEXT;
             CHECK_LEN(SQLUINTEGER);
@@ -389,7 +360,6 @@ SQLRETURN SQL_API SQLGetInfo(
         return SQL_SUCCESS;
 
       case SQL_LOCK_TYPES:
-        // SQLSetPos でのロックの変更
         if( rgbInfoValue ) {
             *(long *)rgbInfoValue = SQL_LCK_NO_CHANGE;
         }
@@ -398,7 +368,6 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_MAX_CATALOG_NAME_LEN:
         if( rgbInfoValue ) {
-            // *(SQLUSMALLINT *)rgbInfoValue = 31; 
             *(SQLUSMALLINT *)rgbInfoValue = 0;   // other driver
             CHECK_LEN(SQLUSMALLINT);
         }
@@ -429,7 +398,6 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_MAX_SCHEMA_NAME_LEN:
         if( rgbInfoValue ) {
-            // *(SQLUSMALLINT *)rgbInfoValue = 31; 
             *(SQLUSMALLINT *)rgbInfoValue = 0;  // other driver
             CHECK_LEN(SQLUSMALLINT);
         }
@@ -485,7 +453,6 @@ SQLRETURN SQL_API SQLGetInfo(
         if( pcbInfoValue ) *pcbInfoValue = sizeof( SQLUSMALLINT );
         return SQL_SUCCESS;
 
-      // Access2000 Bug の原因の１つ。("N"なら問題無い)
       case SQL_ORDER_BY_COLUMNS_IN_SELECT:
         if( rgbInfoValue && cbInfoValueMax > 1 ) {
             strcpy( (char*)rgbInfoValue, "N" );
@@ -507,7 +474,6 @@ SQLRETURN SQL_API SQLGetInfo(
         if( pcbInfoValue ) *pcbInfoValue = 5;
         return SQL_SUCCESS;
 
-      // ODBC カーソル使用時は、Driver の情報
       case SQL_POSITIONED_STATEMENTS:
         if( rgbInfoValue ) {
             *(SQLUINTEGER *)rgbInfoValue = 0; 
@@ -516,9 +482,7 @@ SQLRETURN SQL_API SQLGetInfo(
         RESULT_LEN(SQLUINTEGER);
         return SQL_SUCCESS;
 
-      // ODBC カーソル使用時は、Driver の情報
       case SQL_POS_OPERATIONS:
-        // SQLSetPos で何が出来るか -> 現在は全くサポートしない
         if( rgbInfoValue ) {
             *(SQLUINTEGER *)rgbInfoValue = 0; 
             CHECK_LEN(SQLUINTEGER);
@@ -542,7 +506,7 @@ SQLRETURN SQL_API SQLGetInfo(
 
       case SQL_ROW_UPDATES:
         if( rgbInfoValue ) {
-            strcpy( (char*)rgbInfoValue, "Y" );  // uso!
+            strcpy( (char*)rgbInfoValue, "Y" );
         }
         if( pcbInfoValue ) *pcbInfoValue = 1;
         return SQL_SUCCESS;
@@ -562,7 +526,6 @@ SQLRETURN SQL_API SQLGetInfo(
         return SQL_SUCCESS;
 
       case SQL_SEARCH_PATTERN_ESCAPE:
-        // like 述語中の _ や % のエスケープ文字（サポートしているのなら）
         if( rgbInfoValue && cbInfoValueMax > 1 ) {
             strcpy( (char*)rgbInfoValue, "" );
         }
@@ -578,7 +541,6 @@ SQLRETURN SQL_API SQLGetInfo(
         return SQL_SUCCESS;
 
       case SQL_STATIC_SENSITIVITY:
-        // SQLSetPos のモードを変更できるか？
         if( rgbInfoValue ) {
             *(long *)rgbInfoValue = 0; // 何も出来ない
         }
@@ -609,7 +571,6 @@ SQLRETURN SQL_API SQLGetInfo(
       case SQL_TXN_CAPABLE:
         if( rgbInfoValue ) {
             *(short *)rgbInfoValue = SQL_TC_DDL_COMMIT;
-            // *(short *)rgbInfoValue = SQL_TC_ALL; // とりあえず
         }
         if( pcbInfoValue ) *pcbInfoValue = 2;
         return SQL_SUCCESS;

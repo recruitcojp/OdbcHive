@@ -8,46 +8,8 @@
 #include <errno.h>
 #include <windows.h>
 
-//
-//  IB_STMT の catalog_opt の種別
-//
-#define CATALOG_OPT_TABLES     1
-#define CATALOG_OPT_COLUMNS    2
-#define CATALOG_OPT_STATISTICS 3
-#define CATALOG_OPT_SPECIAL    4
-#define CATALOG_OPT_PRIMARYKEY 5
-#define CATALOG_OPT_TYPEINFO   6
-#define CATALOG_OPT_PROCEDURES 7
-
 #define MIN(x,y) ( (x) < (y) ? (x) : (y) )
 #define ABS(x)   ( (x) < 0 ? (-(x)) : (x) )
-
-
-/*
-プロトタイプ宣言
-*/
-void debuglog( char *fmt, ... );
-int DBExecute(int sockfd,char *query);
-int DBFetchOne(int sockfd,char *ou);
-int DBFetchN(int sockfd,char *ou);
-int DBConnect(char *svr,short port);
-int DBDisconnect();
-int tcp_connect(char *server_name,short server_port);
-int tcp_select(int type, int tm);
-int tcp_write(char *buf, int buf_len);
-int tcp_read(char *buf, int buf_len);
-int tcp_disconnect();
-
-
-/*
-グローバル変数
-*/
-extern int sockfd;
-extern int errflg;
-extern int debug_level;
-
-
-using namespace System;
 
 
 typedef unsigned char  uchar;
@@ -68,7 +30,6 @@ typedef struct
 // SQL_ERROR の情報構造体
 typedef struct {
     char       msg[512+32];          // 根拠は無い
-//    ISC_STATUS status[20];           // ステータスベクタ(20個は規定値)
     BOOL       is_server;            // エラーの出所
     int        native;               // ネイティブエラーコード
 } IB_ERRINFO;
@@ -88,24 +49,18 @@ typedef struct {
     SQLSMALLINT  odbc_nullable;     // ODBC null 可否
     BOOL         is_bind;           // C 変数バインド済みか
     SQLSMALLINT  ctype;             // C 言語タイプ
-    // SDWORD       clen;              // C データ長 = ODBC Precision 
     void         *data;             // C 変数データ
     SQLINTEGER   *pind;             // データ長およびNULL(負):入出力で使用
     SDWORD       limit;             // C 変数に格納時の限度（出力）
     BOOL         is_at_exec;        // 実行時パラメータ
     BOOL         is_at_exec_end;    // 実行時パラメータのput完了
     long         data_pos;          // CHUNK 処理（入出力）の次のバイト位置
-    //isc_blob_handle hblob;          // BLOB ハンドル
-    //BOOL         is_blob_open;      // BLOB オープン中
-    //BOOL         is_blob_closed;    // BLOB 処理済み（現在機能していない）
-    //long         blob_remain;       // BLOB 取得残りバイト数
 } IB_XCHG;
 
 //
 //    HSTMT 領域
 //
 typedef struct {
-    //isc_stmt_handle isc_hstmt;
     void          *next_stmt;     // next stmt ( list 構造 )
     void          *pare_dbc;      // 親の dbc
     char          *data;          // data area (use sqlda)
@@ -131,10 +86,8 @@ typedef struct {
 //
 typedef struct {
     IB_STMT       *stmt;          // 最初の hstmt 構造への参照
-    //isc_db_handle db;             // database handle
     BOOL          is_open;
     BOOL          is_noautocommit; // AUTOCOMMIT モード
-    //isc_tr_handle htrans;         // transaction handle
     BOOL          is_trans;       // トランザクション中(htrans では判断出来ない)
     char          *dpb;           // DPB buffer
     int           dpb_size;
@@ -157,19 +110,46 @@ typedef struct {
     IB_ERRINFO    err;           // env レベルのエラー構造体
 } IB_ENV;
 
+
 //
-//   このドライバの DSN 設定情報
+//   レジストリ情報
 //
 typedef struct {
-    char   dsn[ 64 ];
-    char   driver[ MAX_PATH ];
-    char   database[ MAX_PATH ];
-    char   uid[ 64 ];
-    char   pwd[ 64 ];
-    BOOL   savpwd;
-    char   charset[ 64 ];
-    ushort dialect;
-    char   debug[ 2 ];
-} DSN_INFO;
+    char	driver[ MAX_PATH ];
+    char	database[ MAX_PATH ];
+    char	host[ MAX_PATH ];
+	char	framed[ MAX_PATH ];
+	char	logfile[ MAX_PATH ];
+    short	port;
+	int		debug_level;
+} REGISTER_INFO;
+
+
+/*
+プロトタイプ宣言
+*/
+void debuglog( char *fmt, ... );
+int DBExecute(int sockfd,char *query);
+int DBFetchOne(int sockfd,char *ou);
+int DBFetchN(int sockfd,char *ou);
+int DBConnect(char *svr,short port);
+int DBDisconnect();
+int tcp_connect(char *server_name,short server_port);
+int tcp_select(int type, int tm);
+int tcp_write(char *buf, int buf_len);
+int tcp_read(char *buf, int buf_len);
+int tcp_disconnect();
+char *utl_strSepValue(char *s1,char sep1,int idx1);
+char *utl_strCut(char *in, char c);
+int utl_GetRegistory();
+int func_init(char *func);
+
+
+/*
+グローバル変数
+*/
+extern int sockfd;
+extern int errflg;
+extern REGISTER_INFO reginfo; 
 
 

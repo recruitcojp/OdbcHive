@@ -1,7 +1,7 @@
 target : hiveodbc.dll
 
-CPP_PROJ=/nologo /O2 /c /clr
-
+#CPP_PROJ=/nologo /O2 /c /clr
+CPP_PROJ=/nologo /O2 /c
 
 LINK32 = link.exe
 
@@ -19,6 +19,7 @@ getdata.obj \
 hiveodbc.obj \
 hiveclient.obj \
 tcp.obj \
+utl.obj \
 debug.obj
 
 .cpp.obj:

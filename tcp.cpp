@@ -9,9 +9,7 @@ int tcp_connect(char *server_name,short server_port){
 
 	WSAStartup(MAKEWORD(2,0), &data);
 
-	/*
-	 * client_addr構造体に、接続するサーバのアドレス・ポート番号を設定
-	 */
+	/*client_addr構造体に、接続するサーバのアドレス・ポート番号を設定 */
 	memset(&client_addr, 0, sizeof(client_addr));
 	client_addr.sin_family = AF_INET;
 	client_addr.sin_addr.s_addr = inet_addr(server_name);

@@ -1,0 +1,24 @@
+■コンパイル方法
+(1)ソースをローカルにコピー
+S:\10_プロエンU\21_技術支援_D集計\25_共通部品\60_ODBCドライバ検討\ソース\hiveodbc\v0.01
+(2)visual Studioコマンドプロンプトを起動
+(3)コンパイル
+　cd <コピーしたフォルダ>
+　nmake 
+(4)再作成
+　cd <コピーしたフォルダ>
+　nmake clean
+  nmake
+
+■利用方法
+(1) コンパイルし作成された"hiveodbc.dll"を任意フォルダにコピー
+(2) "hiveodbc.reg"を環境に合わせて変更し、ダブルクリック
+
+例）設定例
+"Database"="default"
+"Driver"="hiveodbc"
+"Server"="192.168.224.129"
+"Port"="10000"
+"Framed"="0"
+"Debug"="1"
+"LogFile"="d:\\ctest\\hiveodbc.log"

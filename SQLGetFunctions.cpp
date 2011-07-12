@@ -2,17 +2,12 @@
 
 UWORD is_odbc_function( SQLSMALLINT fFunction ) ;
 
-
-//
-//  ドライバマネジャから最初に尋ねられる。
-//
-
 SQLRETURN SQL_API SQLGetFunctions(
     SQLHDBC            hdbc,
     SQLUSMALLINT       fFunction,
     SQLUSMALLINT FAR  *pfExists)
 {
-    debuglog("SQLGetFunction(%d)", (int)fFunction);
+	if ( func_init("SQLGetFunction") != 0 ){ return SQL_ERROR; }
 
     if (fFunction == SQL_API_ALL_FUNCTIONS) {
         int i;
