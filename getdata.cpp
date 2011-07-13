@@ -1,4 +1,6 @@
 #include "hiveodbc.h"
+#include <string>
+#include <boost/regex.hpp>
 
 static char fetch_fase=0;
 static int  fetch_cols;
@@ -7,8 +9,9 @@ static char fetch_data[1024];
 static char fetch_data_sjis[1024];
 static char fetch_data_utf16[1024];
 static char fetch_func[1024];
-static char fetch_query[1024];
+static char fetch_query[10240];
 
+using namespace std;
 
 SQLRETURN SQL_API SQLAllocStmt(
     SQLHDBC            hdbc,
@@ -47,14 +50,74 @@ SQLRETURN SQL_API SQLExecDirect(
 {
 	int ret;
 	char szSqlStr2[1024];
-
+	
 	if ( func_init("SQLExeDirect") != 0 ){ return SQL_ERROR; }
 
 	/* ダブルクォーテーション削除*/
 	strcpy(fetch_query,utl_strCut((char*)szSqlStr,'"'));
+	
+	boost::regex rgx0(" FROM ");
+	string str = fetch_query;
+	if(boost::regex_search(str, rgx0)){
+		// {oj }を削除
+		string replaced = "";
+		string tmpReplaced = string(fetch_query);
+		debuglog("tmpReplaced:%s",tmpReplaced.c_str());
+		boost::regex rgx1("\\{oj");
+		replaced = boost::regex_replace(tmpReplaced, rgx1, "", boost::format_all);
+		tmpReplaced = replaced;
+		debuglog("replaced:%s",replaced.c_str());
+		boost::regex rgx2("\\}");
+		replaced = boost::regex_replace(tmpReplaced, rgx2, "", boost::format_all);
+		tmpReplaced = replaced;
 
-	ret=DBExecute(sockfd,(char*)fetch_query);
-    debuglog("SQLExeDirect(%s,%d)=%d",fetch_query,cbSqlStr,ret);
+		debuglog("replaced:%s",replaced.c_str());
+		// FROM HOGE H, FUGA F ⇒ FROM HOGE H JOIN FUGA F
+		//boost::regex rgx3("FROM (.+?) (.+?),(.+?) (.+?) ");
+		boost::regex rgx3("(.*FROM\\s)(.*\\s)(((GROUP)|(ORDER)|(ON)|(WHERE)|(JOIN)).*)");
+
+		//string query1 = boost::regex_replace(tmpReplaced, rgx3, "$1", boost::format_no_copy);
+		//string query2 = boost::regex_replace(tmpReplaced, rgx3, "$2", boost::format_no_copy);
+		//string query3 = boost::regex_replace(tmpReplaced, rgx3, "$3", boost::format_no_copy);
+		
+		string query1 = boost::regex_replace(tmpReplaced, rgx3, "$1", boost::format_all);
+		string query2 = boost::regex_replace(tmpReplaced, rgx3, "$2", boost::format_all);
+		string query3 = boost::regex_replace(tmpReplaced, rgx3, "$3", boost::format_all);
+		
+		if(query1 == query2){
+			query2="";
+		}
+		if(query1 == query3){
+			query3="";
+		}
+		
+		//debuglog("query1:%s",query1.c_str());
+		//debuglog("query2:%s",query2.c_str());
+		//debuglog("query3:%s",query3.c_str());
+		
+		boost::regex rgx4(",");
+		string conv_query2 = boost::regex_replace(query2, rgx4, " JOIN ", boost::format_all);
+		//debuglog("query2:%s",query2.c_str(),conv_query2.c_str(),query3.c_str());
+		//debuglog("conv_query2:%s",conv_query2.c_str());
+		
+		//debuglog("query:%s %s %s",query1.c_str(),conv_query2.c_str(),query3.c_str());
+		
+		string query4 = query1 + conv_query2 + query3;
+		
+		boost::regex rgx5(" ORDER ");
+		if(boost::regex_search(query4, rgx5)){
+			ret=DBExecute(sockfd, "set mapred.reduce.tasks=1");
+		}
+		string query = boost::regex_replace(query4, rgx5, " SORT ", boost::format_all);
+
+		strcpy(fetch_query, (char*)query.c_str());
+		
+		
+	}
+
+	ret=DBExecute(sockfd, fetch_query);
+	debuglog("SQLExeDirect(%s,%d)=%d",fetch_query,cbSqlStr,ret);
+	
 	if ( ret != 0 ){ return SQL_ERROR; }
     return SQL_SUCCESS;
 

@@ -1,7 +1,7 @@
 target : hiveodbc.dll
 
 #CPP_PROJ=/nologo /O2 /c /clr
-CPP_PROJ=/nologo /O2 /c
+CPP_PROJ=/nologo /O2 /c /EHsc
 
 LINK32 = link.exe
 
