@@ -13,10 +13,8 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\hiveodbc]
 "Database"="default"
 "Driver"="hiveodbc"
-"Server"="10.1.243.51"
+"Server"="www.xxx.yyy.zzz"
 "Port"="5001"
-#"Server"="172.23.208.141"
-#"Port"="10000"
 "Framed"="0"
 "Debug"="100"
 "LogFile"="C:\\hive_odbc\\log\\hiveodbc.log"
